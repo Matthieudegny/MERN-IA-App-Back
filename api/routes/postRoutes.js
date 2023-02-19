@@ -27,6 +27,7 @@ router.route("/").get(async (req, res) => {
   }
 });
 
+//Create a new post in the Mongo DB and save it too in the cloud
 router.route("/").post(async (req, res) => {
   try {
     const { name, prompt, photo } = req.body;
