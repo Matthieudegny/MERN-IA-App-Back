@@ -49,4 +49,32 @@ router.route("/").post(async (req, res) => {
   }
 });
 
+router.route("/delete").delete(async (req, res) => {
+  try {
+    const { idCloud, idDB } = req.body;
+
+    const photoUrl = await cloudinary.uploader.destroy(`${idCloud}`);
+
+    if (photoUrl.result === "ok") {
+      const postToDelete = await Post.findOneAndDelete({ _id: idDB });
+
+      if (!postToDelete) {
+        return res.status(404).json({ error: "no order find with this id" });
+      }
+
+      res.status(200).json(postToDelete);
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Unable to delete a post from cloud, please try again",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Unable to delete a post, please try again",
+    });
+  }
+});
+
 export default router;
